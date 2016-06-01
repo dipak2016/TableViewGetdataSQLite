@@ -13,10 +13,39 @@
 @end
 
 @implementation AppDelegate
-
+@synthesize dbpath;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    NSArray *arr=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    
+    NSString *stpath=[arr objectAtIndex:0];
+    
+    dbpath=[stpath stringByAppendingPathComponent:@"state.tyu"];
+    
+    NSLog(@"%@",dbpath);
+    
+    if (![[NSFileManager defaultManager]fileExistsAtPath:dbpath])
+    {
+        sqlite3 *dbsql;
+        
+        NSArray *arrque=[NSArray arrayWithObjects:@"create table state(st_id integer primary key autoincrement,st_nm varchar(150),st_cod varchar(150))", nil];
+        
+        for (int i=0; i<arrque.count; i++)
+        {
+            if (sqlite3_open([dbpath UTF8String], &dbsql)==SQLITE_OK)
+            {
+                sqlite3_stmt *ppStmt;
+                
+                if (sqlite3_prepare_v2(dbsql, [[arrque objectAtIndex:i]UTF8String ], -1, &ppStmt, nil)==SQLITE_OK)
+                {
+                    sqlite3_step(ppStmt);
+                }
+                sqlite3_finalize(ppStmt);
+            }
+            sqlite3_close(dbsql);
+        }
+    }
     return YES;
 }
 

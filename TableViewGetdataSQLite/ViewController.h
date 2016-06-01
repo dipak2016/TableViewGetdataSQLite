@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface ViewController : UIViewController
-
-
+#import "Dboperation.h"
+@interface ViewController : UIViewController<NSURLSessionDelegate,UITableViewDataSource,UITableViewDelegate>
+{
+    NSMutableDictionary *dict_mute;
+    NSMutableArray *arr_mute;
+    Dboperation *dbop;
+}
+@property (weak, nonatomic) IBOutlet UITableView *tbl_vw;
 @end
 
